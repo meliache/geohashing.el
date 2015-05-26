@@ -13,9 +13,9 @@ The final version would ideally be able to select the date from the calendar
 and have some clever way to select the coordinates or the graticule.
 * * *
 
-At the moment, it should be used like this:
+## Installation and basic interactive use
 
-Add the file `geohashing.el` somewhere into your emacs path and add
+Copy the file `geohashing.el` somewhere into your emacs path and add
 
     (require 'geohashing)
 
@@ -26,7 +26,7 @@ to your emacs config, e.g. `.emacs`. Also, set the calendar variables
     (setq calendar-longitude 31.41)
 
 I use them to display the sunrise and sunset times
-by typing <S> while being in the emacs calendar mode.
+by typing `S` while being in the emacs calendar mode.
 
 Then you can type for example
 
@@ -36,6 +36,8 @@ Then you can type for example
 And you will get the position and distance of the nearest geohash
 from the four graticules next nearest to your coordinates.
 * * *
+
+## Advance use
 
 More things are possible when using it non-interactively:
 
