@@ -34,7 +34,7 @@ Then you can type for example
     M-x nearest-geohash-tomorrow
 
 And you will get the position and distance of the nearest geohash
-from the four graticules next nearest to your coordinates.
+from the four graticules nearest to your coordinates.
 * * *
 
 ## Advance use
