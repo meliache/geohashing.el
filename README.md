@@ -15,12 +15,12 @@ and have some clever way to select the coordinates or the graticule.
 
 At the moment, it should be used like this:
 
-Add the file *"geohashing.el"* somewhere into your emacs path and add
+Add the file `geohashing.el` somewhere into your emacs path and add
 
     (require 'geohashing)
 
-to your emacs config, e.g. ".emacs". Also, set the calendar variables
-*calendar-latitude* and *calendar-longitude*, e.g.
+to your emacs config, e.g. `.emacs`. Also, set the calendar variables
+`calendar-latitude` and `calendar-longitude`, e.g.
 
     (setq calendar-latitude 42.42)
     (setq calendar-longitude 31.41)
