@@ -11,7 +11,7 @@ For user interaction, it has only two interactive functions at the moment,
 which can be thought of as temporary and are on my TODO list.
 The final version would ideally be able to select the date from the calendar
 and have some clever way to select the coordinates or the graticule.
----------------
+* * *
 
 At the moment, it should be used like this:
 
@@ -35,7 +35,7 @@ Then you can type for example
 
 And you will get the position and distance of the nearest geohash
 from the four graticules next nearest to your coordinates.
----------------
+* * *
 
 More things are possible when using it non-interactively:
 
