@@ -25,16 +25,20 @@ to your emacs config, e.g. `.emacs`. Also, set the calendar variables
     (setq calendar-latitude 42.42)
     (setq calendar-longitude 31.41)
 
-I use them to display the sunrise and sunset times
-by typing `S` while being in the emacs calendar mode.
+Those variables are also used for example when typing `S`
+in the emacs calendar mode to display the sunrise and sunset times.
 
-Then you can type for example
+Then you can type
+
+    M-x geohashing
+
+and you will be prompted for a date same as in org-mode.
+Then you will get the geohash coordinates for that date,
+the distance and a link to the OSM map.
 
     M-x nearest-geohash-today
-    M-x nearest-geohash-tomorrow
 
-And you will get the position and distance of the nearest geohash
-from the four graticules nearest to your coordinates.
+will return the nearest geohash coordinates for today.
 * * *
 
 ## Advance use

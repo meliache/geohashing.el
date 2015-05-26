@@ -1,5 +1,6 @@
 (require 'cl)
 (require 'calendar)
+(require 'org)
 
 (setq home-coordinates
       (list calendar-latitude calendar-longitude))
@@ -17,7 +18,7 @@ At the moment alias for cadr"
   (cadr coordinates))
 
 (defun date-today ()
-    "Returns today's date as list of the form '(year month day)."
+  "Returns today's date as list of the form '(year month day)."
   (cl-destructuring-bind (month day year) (calendar-current-date)
     (list year month day)))
 
@@ -68,15 +69,15 @@ according to the geohashing algorithm."
     (secure-hash 'md5 date-djia-string)))
 
 (defun geohash-offset (date w30)
-    "Takes date as a list of the form '(year month date) and boolean for W30 rule
+  "Takes date as a list of the form '(year month date) and boolean for W30 rule
 and returns the offset of the geohash of that date in respect to a graticule
 as a 2-value list."
   (let ((md5-string (get-md5-string date w30)))
     (cl-loop for (start end) in '((0 16) (16 32))
-          collect (/ (string-to-number
-                      (subseq md5-string start end)
-                      16)
-                     (expt 16.0 16)))))
+             collect (/ (string-to-number
+                         (subseq md5-string start end)
+                         16)
+                        (expt 16.0 16)))))
 
 (defun geohash-coordinates (graticule date)
   "Returns geohash coordinates for given graticule '(latitude longitudeg)
@@ -144,12 +145,12 @@ smallest distance to the home coordinates as returned by calc-distance."
   "Returns and OSM link to the given coordinates, with an optional OSM zoom level."
   (cl-destructuring-bind (lat lon) coordinates
     (if zoomlevel
-     (format "https://www.openstreetmap.org/?mlat=%f&mlon=%f#map=%d/%f/%f"
-             lat lon zoomlevel lat lon)
-     (format "https://www.openstreetmap.org/?mlat=%f&mlon=%f#map=%d/%f/%f"
-             lat lon 10 lat lon))))
+        (format "https://www.openstreetmap.org/?mlat=%f&mlon=%f#map=%d/%f/%f"
+                lat lon zoomlevel lat lon)
+      (format "https://www.openstreetmap.org/?mlat=%f&mlon=%f#map=%d/%f/%f"
+              lat lon 10 lat lon))))
 
-(defun nearest-geohash-today ()
+(defun geohash-today ()
   "Uses the calendar-longitude and calendar-latitude variables
 to calculate the nearest geohash for today.
 Intended for quick interactive use."
@@ -165,19 +166,20 @@ Intended for quick interactive use."
                       (calc-distance home-coords geohash-coordinates))
               (get-osm-link geohash-coordinates)))))
 
-(defun nearest-geohash-tomorrow ()
-    "Uses the calendar-longitude and calendar-latitude variables
-to calculate the nearest geohash for tomorrow.
+(defun geohashing ()
+  "Uses the calendar-longitude and calendar-latitude variables and prompt
+the user for the date with the org-read-date function to calculate the nearest
+geohash coordinates for that date.
 Intended for quick interactive use."
   (interactive)
-  (let* ((date (+days (date-today) 1))
-         (home-coords
-          (list calendar-latitude calendar-longitude))
-         (geohash-coordinates
-          (calc-nearest-geohash home-coords date)))
+  (let* ((decoded-time (decode-time (org-read-date nil t)))
+         (date (reverse (cl-subseq decoded-time 3 6)))
+         (home-coords (list calendar-latitude calendar-longitude))
+         (geohash-coordinates (calc-nearest-geohash home-coords date)))
     (message (concat 
-              (format "Nearest geohash at %s\nwith a distance of %f km."
+              (format "Nearest geohash at %s\nwith a distance of %f km.\n"
                       geohash-coordinates
                       (calc-distance home-coords geohash-coordinates))
               (get-osm-link geohash-coordinates)))))
+
 (provide 'geohashing)
