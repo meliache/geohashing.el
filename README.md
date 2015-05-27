@@ -18,14 +18,16 @@ Copy the file `geohashing.el` somewhere into your emacs path and add
 
     (require 'geohashing)
 
-to your emacs config, e.g. `.emacs`. Also, set the calendar variables
-`calendar-latitude` and `calendar-longitude`, e.g.
+to your emacs config, e.g. `.emacs`.
+
+Also, set the calendar variables `calendar-latitude` and
+`calendar-longitude`, e.g. by inserting the following into your `.emacs`:
 
     (setq calendar-latitude 42.42)
     (setq calendar-longitude 31.41)
 
-Those variables are also used for example when typing `S`
-in the emacs calendar mode to display the sunrise and sunset times.
+(Those variables are used for example when typing `S`
+in the emacs calendar mode to display the sunrise and sunset times.)
 
 Then you can type
 
@@ -37,7 +39,7 @@ the distance and you will be asked if you want to open the coordinates
 on a map in the webbrowser.
 
 * * *
-## Advance use
+## Advanced use
 
 More things are possible when using it non-interactively:
 
