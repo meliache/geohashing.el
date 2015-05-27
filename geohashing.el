@@ -2,19 +2,14 @@
 (require 'calendar)
 (require 'org)
 
-(setq home-coordinates
-      (list calendar-latitude calendar-longitude))
-(setq home-graticule
-      (list (floor calendar-latitude) (floor calendar-longitude)))
-
 (defun latitude (coordinates)
   "Takes coordinates as a list '(latitude longitude), returns latitude.
-At the moment alias for car."
+At the moment just an alias for car."
   (car coordinates))
 
 (defun longitude (coordinates)
   "Takes coordinates as a list '(latitude longitude), returns longitude.
-At the moment alias for cadr"
+At the moment just alias for cadr"
   (cadr coordinates))
 
 (defun date-today ()
