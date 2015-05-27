@@ -1,4 +1,4 @@
-# geohashing library for emacs lisp
+# geohashing implementation for emacs lisp
 Collection of interactive and non-interactive functions in emacs lisp for the
 game of geohashing. Work in progress. Has probably bugs,
 is not guaranteed to be stable, code style might be bad and not well documented.
