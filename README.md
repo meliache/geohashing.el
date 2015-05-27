@@ -1,19 +1,17 @@
 # geohashing library for emacs lisp
-Work in progress. At the moment just an incomplete collection of
-emacs functions for the game of geohashing.
-Not yet recommended for use by others yet, it is probably buggy and mostly undocumented.
-I don't have much time at the moment and will fix that later.
+Collection of interactive and non-interactive functions in emacs lisp for the
+game of geohashing. Work in progress. Has probably bugs,
+is not guaranteed to be stable, code style might be bad and not well documented.
+So use it with care.
 
-Explanation of the geohashing game: http://wiki.xkcd.com/geohashing/
+Explanation of the mgeohashing game: http://wiki.xkcd.com/geohashing/
 
 The algorithm: http://wiki.xkcd.com/geohashing/Algorithm
 
-For user interaction, it has only two interactive functions at the moment,
-which can be thought of as temporary and are on my TODO list.
-The final version would ideally be able to select the date from the calendar
-and have some clever way to select the coordinates or the graticule.
-* * *
+Explanation of the W30 rule, which is an additon to *the algorithm* and is implemented here:
+http://wiki.xkcd.com/geohashing/30W_Time_Zone_Rule
 
+* * *
 ## Installation and basic interactive use
 
 Copy the file `geohashing.el` somewhere into your emacs path and add
@@ -41,8 +39,8 @@ the distance and a link to the OSM map.
 
 will return the coordinates of the nearest geohash for today
 without prompting.
-* * *
 
+* * *
 ## Advance use
 
 More things are possible when using it non-interactively:
