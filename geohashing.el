@@ -165,7 +165,7 @@ Intended for quick interactive use."
            (format "Nearest geohash at %s\nwith a distance of %f km.\n%s"
                    geohash-coordinates
                    (calc-distance home-coords geohash-coordinates)
-                   "Open in webbrowser"))
+                   "Open in webbrowser? "))
       (browse-url osm-url))))
 
 (provide 'geohashing)

@@ -33,8 +33,8 @@ Then you can type
 
 and you will be prompted for a date same as in org-mode.
 Then you will get the geohash coordinates for that date,
-the distance and you will be asked if you want to open the URL
-in a webbrowser, which will open a map on osm.org.
+the distance and you will be asked if you want to open the coordinates
+on a map in the webbrowser.
 
 * * *
 ## Advance use
