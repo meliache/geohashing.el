@@ -38,7 +38,8 @@ the distance and a link to the OSM map.
 
     M-x nearest-geohash-today
 
-will return the nearest geohash coordinates for today.
+will return the coordinates of the nearest geohash for today
+without prompting.
 * * *
 
 ## Advance use
