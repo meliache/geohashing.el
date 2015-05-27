@@ -4,7 +4,8 @@ emacs functions for the game of geohashing.
 Not yet recommended for use by others yet, it is probably buggy and mostly undocumented.
 I don't have much time at the moment and will fix that later.
 
-What is geohashing: http://wiki.xkcd.com/geohashing/
+Explanation of the geohashing game: http://wiki.xkcd.com/geohashing/
+
 The algorithm: http://wiki.xkcd.com/geohashing/Algorithm
 
 For user interaction, it has only two interactive functions at the moment,
