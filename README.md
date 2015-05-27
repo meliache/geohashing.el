@@ -54,7 +54,7 @@ will return the geohash coordinates for this graticule on that particular date.
 will return a list of the latitude and longitude of the nearest geohash to your
 exact coordinates.
 
-    (calc-distance '(geohash-coordinates) '(exact-coordinates))
+    (calc-distance geohash-coordinates exact-coordinates)
 
 will return the distance between two coordinates.teractively:
 
@@ -69,7 +69,7 @@ will return the geohash coordinates for this graticules on that particular date.
 will return a list of the latitude and longitude of the nearest geohash to your
 exact coordinates.
 
-    (calc-distance '(geohash-coordinates) '(exact-coordinates))
+    (calc-distance geohash-coordinates exact-coordinates)
 
 will return the distance between two coordinates.teractively:
 
@@ -84,7 +84,7 @@ will return the geohash coordinates for this graticules on that particular date.
 will return a list of the latitude and longitude of the nearest geohash to your
 exact coordinates.
 
-    (calc-distance '(geohash-coordinates) '(exact-coordinates))
+    (calc-distance geohash-coordinates exact-coordinates)
 
 will return the distance between two coordinates.
 
