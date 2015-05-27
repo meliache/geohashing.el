@@ -33,12 +33,8 @@ Then you can type
 
 and you will be prompted for a date same as in org-mode.
 Then you will get the geohash coordinates for that date,
-the distance and a link to the OSM map.
-
-    M-x nearest-geohash-today
-
-will return the coordinates of the nearest geohash for today
-without prompting.
+the distance and you will be asked if you want to open the URL
+in a webbrowser, which will open a map on osm.org.
 
 * * *
 ## Advance use
@@ -48,7 +44,7 @@ More things are possible when using it non-interactively:
     (geohash-coordinates '(graticule-latitude graticule-longitude)
                          '(year month day))
 
-will return the geohash coordinates for this graticules on that particular date.
+will return the geohash coordinates for this graticule on that particular date.
 
     (calc-nearest-geohash '(exact-latitude exact-longitude)
                           '(year month day))
@@ -90,6 +86,6 @@ exact coordinates.
 
 will return the distance between two coordinates.
 
-    (get-osm-link geohash-coordinates)
+    (get-osm-url geohash-coordinates)
 
-will format a string to get a link to an OSM map for these coordinates.
+will format a string to get a url to an OSM map for these coordinates.

@@ -141,30 +141,14 @@ smallest distance to the home coordinates as returned by calc-distance."
                      (+ (longitude grat) (longitude offset))))
              adjecent-grats))))
 
-(defun get-osm-link (coordinates &optional zoomlevel)
-  "Returns and OSM link to the given coordinates, with an optional OSM zoom level."
+(defun get-osm-url (coordinates &optional zoomlevel)
+  "Returns and OSM url to the given coordinates, with an optional OSM zoom level."
   (cl-destructuring-bind (lat lon) coordinates
     (if zoomlevel
         (format "https://www.openstreetmap.org/?mlat=%f&mlon=%f#map=%d/%f/%f"
                 lat lon zoomlevel lat lon)
       (format "https://www.openstreetmap.org/?mlat=%f&mlon=%f#map=%d/%f/%f"
               lat lon 10 lat lon))))
-
-(defun geohash-today ()
-  "Uses the calendar-longitude and calendar-latitude variables
-to calculate the nearest geohash for today.
-Intended for quick interactive use."
-  (interactive)
-  (let* ((date (date-today))
-         (home-coords
-          (list calendar-latitude calendar-longitude))
-         (geohash-coordinates
-          (calc-nearest-geohash home-coords date)))
-    (message (concat 
-              (format "Nearest geohash at %s\nwith a distance of %f km.\n"
-                      geohash-coordinates
-                      (calc-distance home-coords geohash-coordinates))
-              (get-osm-link geohash-coordinates)))))
 
 (defun geohashing ()
   "Uses the calendar-longitude and calendar-latitude variables and prompt
@@ -175,11 +159,13 @@ Intended for quick interactive use."
   (let* ((decoded-time (decode-time (org-read-date nil t)))
          (date (reverse (cl-subseq decoded-time 3 6)))
          (home-coords (list calendar-latitude calendar-longitude))
-         (geohash-coordinates (calc-nearest-geohash home-coords date)))
-    (message (concat 
-              (format "Nearest geohash at %s\nwith a distance of %f km.\n"
-                      geohash-coordinates
-                      (calc-distance home-coords geohash-coordinates))
-              (get-osm-link geohash-coordinates)))))
+         (geohash-coordinates (calc-nearest-geohash home-coords date))
+         (osm-url (get-osm-url geohash-coordinates)))
+    (when (yes-or-no-p
+           (format "Nearest geohash at %s\nwith a distance of %f km.\n%s"
+                   geohash-coordinates
+                   (calc-distance home-coords geohash-coordinates)
+                   "Open in webbrowser"))
+      (browse-url osm-url))))
 
 (provide 'geohashing)
