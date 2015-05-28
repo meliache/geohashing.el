@@ -17,14 +17,14 @@ At the moment just alias for cadr"
   (cl-destructuring-bind (month day year) (calendar-current-date)
     (list year month day)))
 
-(defun +days (date day-delta)
-  (cl-destructuring-bind (year month day) date
-    (list year month (+ day day-delta))))
-
 (defun w30-rule (coordinates)
   "True if longitude west of -30deg.
 Takes coordinates as '(latitude longitude)"
   (< (car coordinates) -30))
+
+(defun hex-to-fractional (hex-string)
+  "Converts a lowercase hex string to a decimal fraction."
+  (/ (string-to-number hex-string 16) (expt 16.0 (length hex-string))))
 
 (defun get-djia-string (date)
   "Takes date as list of '(year month day)
@@ -33,46 +33,41 @@ if known for that date.
 In case that DJIA for that date is unkown, fails, as no error handling
 is implemented yet.
 Uses API at carabiner.peeron.com. "
-  (let* ((year (car date))
-         (month (second date))
-         (day (third date))
-         (djia-url (format "http://carabiner.peeron.com/xkcd/map/data/%d/%02d/%02d"
-                           year month day))
-         (buffer (url-retrieve-synchronously djia-url))
-         (djia-string nil))
-    (save-excursion
-      (set-buffer buffer)
-      (goto-char (point-min))
-      (re-search-forward "^[0-9\.]+" nil 'move)
-      (setq djia-string
-            (buffer-substring-no-properties (point-at-bol) (point-at-eol)))
-      (kill-buffer (current-buffer)))
-    (if (equal "" djia-string)
-        (error "Couldn't get DJIA for that date.")
-      djia-string)))
+  (cl-destructuring-bind (year month day) date
+    (let* ((djia-url
+            (format "http://carabiner.peeron.com/xkcd/map/data/%d/%02d/%02d"
+                    year month day))
+           (buffer (url-retrieve-synchronously djia-url))
+           (djia-string nil))
+      (save-excursion
+        (set-buffer buffer)
+        (goto-char (point-min))
+        (re-search-forward "^[0-9\.]+" nil 'move)
+        (setq djia-string
+              (buffer-substring-no-properties (point-at-bol) (point-at-eol)))
+        (kill-buffer (current-buffer)))
+      (if (equal "" djia-string)
+          (error "Couldn't get DJIA for that date.")
+        djia-string))))
 
-(defun get-md5-string (date w30)
-  "Calculates the md5 sum from the date and DJIA
-according to the geohashing algorithm."
-  (let* ((year (car date))
-         (month (second date))
-         (day (third date))
-         (djia-string (get-djia-string
-                       (list year month (if w30 day (1- day)))))
-         (date-djia-string
-          (format "%d-%02d-%02d-%s" year month day djia-string)))
-    (secure-hash 'md5 date-djia-string)))
+(defun get-md5-string (date djia-string)
+  "Gets DJIA and calculates the md5 sum from the date and djia-string
+according to the geohashing algorithm, returns it as a lowercase hex string."
+  (cl-destructuring-bind (year month day) date
+    (secure-hash
+     'md5 (format "%d-%02d-%02d-%s" year month day djia-string))))
 
 (defun geohash-offset (date w30)
-  "Takes date as a list of the form '(year month date) and boolean for W30 rule
+  "Takes date as a list of the form '(year month date) and boolean for w30 rule
 and returns the offset of the geohash of that date in respect to a graticule
 as a 2-value list."
-  (let ((md5-string (get-md5-string date w30)))
-    (cl-loop for (start end) in '((0 16) (16 32))
-             collect (/ (string-to-number
-                         (subseq md5-string start end)
-                         16)
-                        (expt 16.0 16)))))
+  (cl-destructuring-bind (year month day) date
+    (let* ((djia-string (get-djia-string
+                         (list year month (if w30 day (1- day)))))
+           (md5-string (get-md5-string date djia-string)))
+      (cl-loop for (start end) in '((0 16) (16 32))
+               collect (hex-to-fractional
+                        (subseq md5-string start end))))))
 
 (defun geohash-coordinates (graticule date)
   "Returns geohash coordinates for given graticule '(latitude longitudeg)
@@ -84,6 +79,7 @@ and date '(year month day) as a 2-value list '(latitude longitudeg)."
 (defun haversin (angle)
   "Haversine function of an angle given in radians"
   (/ (- 1 (cos angle)) 2))
+
 (defun calc-distance (coord1 coord2)
   "Calculates the distance between two coordinates on earth.
 Uses the haversine formula .
