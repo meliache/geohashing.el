@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>README.html</title>
+
+</head>
+
+<body>
+
+<h1>geohashing library for emacs lisp</h1>
+
+<p>Collection of interactive and non-interactive functions in emacs lisp for the
+game of geohashing. Work in progress. Has probably bugs,
+is not guaranteed to be stable, code style might be bad and not well documented.
+So use it with care.</p>
+
+<p>Explanation of the mgeohashing game: http://wiki.xkcd.com/geohashing/</p>
+
+<p>The algorithm: http://wiki.xkcd.com/geohashing/Algorithm</p>
+
+<p>Explanation of the W30 rule, which is an additon to <em>the algorithm</em> and is implemented here:
+http://wiki.xkcd.com/geohashing/30W<em>Time</em>Zone_Rule</p>
+
+<hr />
+
+<h2>Installation and basic interactive use</h2>
+
+<p>Copy the file <code>geohashing.el</code> somewhere into your emacs path and add</p>
+
+<pre><code>(require 'geohashing)
+</code></pre>
+
+<p>to your emacs config, e.g. <code>.emacs</code>.</p>
+
+<p>Also, set the calendar variables <code>calendar-latitude</code> and
+<code>calendar-longitude</code>, e.g. by inserting the following into your <code>.emacs</code>:</p>
+
+<pre><code>(setq calendar-latitude 42.42)
+(setq calendar-longitude 31.41)
+</code></pre>
+
+<p>(Those variables are used for example when typing <code>S</code>
+in the emacs calendar mode to display the sunrise and sunset times.)</p>
+
+<p>Then you can type</p>
+
+<pre><code>M-x geohashing
+</code></pre>
+
+<p>and you will be prompted for a date same as in org-mode.
+Then you will get the geohash coordinates for that date,
+the distance and you will be asked if you want to open the coordinates
+on a map in the webbrowser.</p>
+
+<hr />
+
+<h2>Advance use</h2>
+
+<p>More things are possible when using it non-interactively:</p>
+
+<pre><code>(geohash-coordinates '(graticule-latitude graticule-longitude)
+                     '(year month day))
+</code></pre>
+
+<p>will return the geohash coordinates for this graticule on that particular date.</p>
+
+<pre><code>(calc-nearest-geohash '(exact-latitude exact-longitude)
+                      '(year month day))
+</code></pre>
+
+<p>will return a list of the latitude and longitude of the nearest geohash to your
+exact coordinates.</p>
+
+<pre><code>(calc-distance '(geohash-coordinates) '(exact-coordinates))
+</code></pre>
+
+<p>will return the distance between two coordinates.teractively:</p>
+
+<pre><code>(geohash-coordinates '(graticule-latitude graticule-longitude)
+                     '(year month day))
+</code></pre>
+
+<p>will return the geohash coordinates for this graticules on that particular date.</p>
+
+<pre><code>(calc-nearest-geohash '(exact-latitude exact-longitude)
+                      '(year month day))
+</code></pre>
+
+<p>will return a list of the latitude and longitude of the nearest geohash to your
+exact coordinates.</p>
+
+<pre><code>(calc-distance '(geohash-coordinates) '(exact-coordinates))
+</code></pre>
+
+<p>will return the distance between two coordinates.teractively:</p>
+
+<pre><code>(geohash-coordinates '(graticule-latitude graticule-longitude)
+                     '(year month day))
+</code></pre>
+
+<p>will return the geohash coordinates for this graticules on that particular date.</p>
+
+<pre><code>(calc-nearest-geohash '(exact-latitude exact-longitude)
+                      '(year month day))
+</code></pre>
+
+<p>will return a list of the latitude and longitude of the nearest geohash to your
+exact coordinates.</p>
+
+<pre><code>(calc-distance '(geohash-coordinates) '(exact-coordinates))
+</code></pre>
+
+<p>will return the distance between two coordinates.</p>
+
+<pre><code>(get-osm-url geohash-coordinates)
+</code></pre>
+
+<p>will format a string to get a url to an OSM map for these coordinates.</p>
+
+</body>
+</html>
