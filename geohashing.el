@@ -14,6 +14,7 @@
 (require 'cl-seq)                       ; for cl-reduce
 (require 'cl-macs)                      ; for cl-loop
 (require 'org)                          ; for org-read-date
+(require 'pcase)
 (require 'seq)
 
 (defcustom geohashing-home
@@ -108,7 +109,7 @@ handling is implemented yet. Uses API at carabiner.peeron.com."
       (with-current-buffer buffer
         (goto-char (point-min))
         (re-search-forward "^[0-9\.]+" nil 'move)
-        (setf djia-string
+        (setq djia-string
               (buffer-substring-no-properties (point-at-bol) (point-at-eol)))
         (kill-buffer (current-buffer)))
       (if (equal "" djia-string)
@@ -194,6 +195,8 @@ with the smallest distance to the home coordinates as returned by
                              (geohashing--calc-distance home-coords c2)))))
     (geohashing--min-by distance-comparator nearby-geohash-coordinates)))
 
+
+
 ;;;###autoload
 (defun geohashing ()
   "Start geohashing.
@@ -203,16 +206,17 @@ geohash to you on that day. Then, it will ask whether to open
 this geohash coordinates in a map."
   ;; TODO make this an entire menu or possibly even major-mode
   (interactive)
-  (let* ((decoded-time (decode-time (org-read-date nil t)))
-         (date (reverse (seq-subseq decoded-time 3 6)))
-         (geohash-coordinates (geohashing--calc-nearest-geohash geohashing-home date)))
+  (pcase-let*
+      ((decoded-time (decode-time (org-read-date nil t)))
+       (date (reverse (seq-subseq decoded-time 3 6)))
+       (geohash-coordinates (geohashing--calc-nearest-geohash geohashing-home date))
+       (`(,lat ,lon) geohash-coordinates))
     (when (yes-or-no-p
            (format "Nearest geohash at %s\nwith a distance of %f km.\nOpen map?"
                    geohash-coordinates
                    (geohashing--calc-distance geohashing-home geohash-coordinates)))
-      (seq-let (lat lon) geohash-coordinates
-        (require 'osm)
-        (osm-goto lat lon geohashing-osm-zoom-level)))))
+      (require 'osm)
+      (osm-goto lat lon geohashing-osm-zoom-level))))
 
 (provide 'geohashing)
 
