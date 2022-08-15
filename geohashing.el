@@ -38,20 +38,20 @@
   "Take list `(month day year)', which is the date order that
 calendar.el uses, and rearrange it to the ISO norm of
 `(year month day)', which is used by `org-mode' and and this library."
-  (cl-destructuring-bind (month day year) calendar-date
+  (seq-let (month day year) calendar-date
     (list year month day)))
 
 (defun geohashing--iso-to-calendar-date (iso-date)
   "Take a date `(year month day)' in the ISO norm as used in this library,
 and rearrange it to `(month day year)', which is the order
 that calendar.el uses."
-  (cl-destructuring-bind (year month day) iso-date
+  (seq-let (year month day) iso-date
     (list month day year)))
 
 ;; TODO use ts.el https://github.com/alphapapa/ts.el
 (defun geohashing--date-compare (date1 date2)
   "Take two dates as `(year month day)', true if DATE1 before DATE2."
-  (cl-destructuring-bind
+  (seq-let
       (year1 month1 day1 year2 month2 day2)
       (append date1 date2)
     (calendar-date-compare (cons (list month1 day1 year1) nil)
@@ -87,7 +87,7 @@ Takes DATE as list of `(year month day)' and returns the Dow
 Jones Industrial Average as a string, if known for that date. In
 case that DJIA for that date is unkown, fails, as no error
 handling is implemented yet. Uses API at carabiner.peeron.com."
-  (cl-destructuring-bind (year month day) date
+  (seq-let (year month day) date
     (let* ((djia-url
             (format "http://carabiner.peeron.com/xkcd/map/data/%d/%02d/%02d"
                     year month day))
@@ -105,7 +105,7 @@ handling is implemented yet. Uses API at carabiner.peeron.com."
 
 (defun geohashing--get-md5-string (date djia-string)
   "Calculate the md5 hash string from the DATE and DJIA-STRING."
-  (cl-destructuring-bind (year month day) date
+  (seq-let (year month day) date
     (secure-hash 'md5 (format "%d-%02d-%02d-%s" year month day djia-string))))
 
 (defun geohashing--get-offset (date 30W)
@@ -184,7 +184,7 @@ with the smallest distance to the home coordinates as returned by
 
 (defun geohashing--get-osm-url (coordinates &optional zoom-level)
   "Return an OSM url for COORDINATES, with an optional ZOOM-LEVEL."
-  (cl-destructuring-bind (lat lon) coordinates
+  (seq-let (lat lon) coordinates
     (if zoom-level
         (format "https://www.openstreetmap.org/?mlat=%f&mlon=%f#map=%d/%f/%f"
                 lat lon zoom-level lat lon)
