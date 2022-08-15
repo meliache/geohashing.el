@@ -194,15 +194,6 @@ with the smallest distance to the home coordinates as returned by
                              (geohashing--calc-distance home-coords c2)))))
     (geohashing--min-by distance-comparator nearby-geohash-coordinates)))
 
-(defun geohashing--get-osm-url (coordinates &optional zoom-level)
-  "Return an OSM url for COORDINATES, with an optional ZOOM-LEVEL."
-  (seq-let (lat lon) coordinates
-    (if zoom-level
-        (format "https://www.openstreetmap.org/?mlat=%f&mlon=%f#map=%d/%f/%f"
-                lat lon zoom-level lat lon)
-      (format "https://www.openstreetmap.org/?mlat=%f&mlon=%f#map=%d/%f/%f"
-              lat lon 10 lat lon))))
-
 ;;;###autoload
 (defun geohashing ()
   "Start geohashing.
