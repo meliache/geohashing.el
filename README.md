@@ -1,7 +1,6 @@
-# Geohashing for emacs 🎲🌐
+# Geohashing 🎲🌐 with the Emacs text editor
 
-[Geohashing](https://geohashing.site/geohashing/Main_Page) coordinates calculator for Emacs.
-Currently it just implements an interactive function to pick a date and find the nearest geohash to you.
+[Geohashing](https://geohashing.site/geohashing/Main_Page) coordinates calculator for the [Emacs](https://www.gnu.org/software/emacs) text-editor.
 
 ## Disclaimer
 
