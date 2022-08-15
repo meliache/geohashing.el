@@ -2,38 +2,39 @@
 (require 'calendar)
 (require 'org)
 (require 'cl-macs)
+(require 'cl-lib)
 
 (defun latitude (coordinates)
-  "Take COORDINATES as a list '(latitude longitude) [deg]. Return latitude."
+  "Take COORDINATES as a list `(latitude longitude)' [deg]. Return latitude."
   (car coordinates))
 
 (defun longitude (coordinates)
-  "Takes COORDINATES as a list '(latitude longitude) [deg]. Return longitude."
+  "Takes COORDINATES as a list `(latitude longitude)' [deg]. Return longitude."
   (cl-second coordinates))
 
 (defun calendar-date-to-iso (calendar-date)
-  "Takes list '(month day year), which is the date order that
+  "Takes list `(month day year)', which is the date order that
 calendar.el uses, and rearranges it to the ISO norm of 
-'(year month day), which is used by org-mode and and this library."
+`(year month day)', which is used by `org-mode' and and this library."
   (cl-destructuring-bind (month day year) calendar-date
     (list year month day)))
 
 (defun iso-to-calendar-date (iso-date)
-  "Takes a date '(year month day) in the ISO norm as used in this library,
-and rearranges it to '(month day year), which is the order 
+  "Takes a date `(year month day)' in the ISO norm as used in this library,
+and rearranges it to `(month day year)', which is the order
 that calendar.el uses."
   (cl-destructuring-bind (year month day) iso-date
     (list month day year)))
 
 (defun date-compare (date1 date2)
-  "Takes two dates as '(year month day), true if date1 before date2."
+  "Take two dates as `(year month day)', true if DATE1 before DATE2."
   (cl-destructuring-bind
       (year1 month1 day1 year2 month2 day2)
       (append date1 date2)
     (calendar-date-compare (cons (list month1 day1 year1) nil)
                            (cons (list month2 day2 year2) nil))))
 (defun +days (date days-to-add)
-  "Takes date as '(year month day) and adds the given amount of days."
+  "Take DATE as `(year month day)' and add the DAYS-to-ADD number of days."
   (calendar-date-to-iso
    (calendar-gregorian-from-absolute
     (+ (calendar-absolute-from-gregorian
@@ -41,7 +42,7 @@ that calendar.el uses."
        days-to-add))))
 
 (defun date-today ()
-  "Return today's date as list of the form '(year month day)."
+  "Return today's date as list of the form `(year month day)'."
   (calendar-date-to-iso (calendar-current-date)))
 
 (defconst first-day-of-30W '(2008 05 27))
@@ -87,13 +88,13 @@ handling is implemented yet. Uses API at carabiner.peeron.com."
 
 (defun geohash-offset (date 30W)
   "Calculate decimal points of geohash for DATE depending on 30W rule.
-Takes DATE as a list of the form '(year month date) and boolean
+Takes DATE as a list of the form `(year month date)' and boolean
 for 30W rule and returns the offset of the geohash of that date
 in respect to a graticule as a 2-value list."
   (let* ((djia-string (get-djia-string (if 30W (+days date -1) date)))
          (md5-string (get-md5-string date djia-string)))
     (cl-loop for (start end) in '((0 16) (16 32))
-             collect (hex-to-fractional (subseq md5-string start end)))))
+             collect (hex-to-fractional (substring md5-string start end)))))
 
 (defun geohash-coordinates (graticule date)
   "Return geohash coordinates for given GRATICULE and DATE."
@@ -139,10 +140,10 @@ Returns the element of list for which fn-to-min gets minimal."
                   (mapcar (lambda (l) (list (funcall fn-to-min l) l)) list))))
 
 (defun calc-nearest-geohash (home-coords date)
-  "Takes exact home coordinates as '(lat long) and date as '(year month day)
-and returns list of coordinates of 'nearest geohash'.
-The 'nearest geohash' is determined by calculating the geohash locations
-for the 4 adjecant graticules and returning the geohash location with the
+  "Take exact home coordinates as `(lat long)' and DATE as `(year month day)'
+and returns list of coordinates of nearest geohash.
+The nearest geohash is determined by calculating the geohash locations
+for the four adjecant graticules and returning the geohash location with the
 smallest distance to the home coordinates as returned by calc-distance."
   (let* ((offset (geohash-offset date (30W-rule home-coords date)))
          (adjecent-grats (adjecent-graticules home-coords)))
@@ -153,12 +154,12 @@ smallest distance to the home coordinates as returned by calc-distance."
                      (+ (longitude grat) (longitude offset))))
              adjecent-grats))))
 
-(defun get-osm-url (coordinates &optional zoomlevel)
-  "Returns and OSM url to the given coordinates, with an optional OSM zoom level."
+(defun get-osm-url (coordinates &optional zoom-level)
+  "Return an OSM url for COORDINATES, with an optional ZOOM-LEVEL."
   (cl-destructuring-bind (lat lon) coordinates
-    (if zoomlevel
+    (if zoom-level
         (format "https://www.openstreetmap.org/?mlat=%f&mlon=%f#map=%d/%f/%f"
-                lat lon zoomlevel lat lon)
+                lat lon zoom-level lat lon)
       (format "https://www.openstreetmap.org/?mlat=%f&mlon=%f#map=%d/%f/%f"
               lat lon 10 lat lon))))
 
