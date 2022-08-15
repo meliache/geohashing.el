@@ -4,7 +4,6 @@
 ;; Maintainer: Michael Eliachevitch <m.eliachevitch@posteo.de>
 ;; Homepage: https://github.com/meliache/geohashing.el
 ;; Package-Requires: ((dash "2.19.1"))
-(use-package dash)
 
 ;;; Commentary:
 ;; TODO: add commentary
