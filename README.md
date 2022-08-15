@@ -1,93 +1,43 @@
-# geohashing implementation for emacs lisp
-Collection of interactive and non-interactive functions in emacs lisp for the
-game of geohashing. Work in progress. Has probably bugs,
-is not guaranteed to be stable, code style might be bad and not well documented.
-So use it with care.
+# Geohashing for emacs 🎲🌐
 
-Explanation of the mgeohashing game: http://wiki.xkcd.com/geohashing/
+[Geohashing](https://geohashing.site/geohashing/Main_Page) coordinates calculator for Emacs.
+Currently it just implements an interactive function to pick a date and find the nearest geohash to you.
 
-The algorithm: http://wiki.xkcd.com/geohashing/Algorithm
+## Disclaimer
 
-Explanation of the W30 rule, which is an additon to *the algorithm* and is implemented here:
-http://wiki.xkcd.com/geohashing/30W_Time_Zone_Rule
+- This is package still in early development and work-in-progress.
+- `geohashing.el` was originally my first emacs lisp programming project, which I made when I was very new to programming in general. As I rediscovered geohashing for myself recently, I starting cleaning it up and make this a proper emacs package, but it's still not following many emacs best practices. 
+- Not all [quirks of the algorithm](https://geohashing.site/geohashing/The_Algorithm#Quirks) are implemented yet. `geohashing.el` takes into account
 
-* * *
-## Installation and basic interactive use
+## Installation 
 
-Copy the file `geohashing.el` somewhere into your emacs path and add
-
-    (require 'geohashing)
-
+### Manual
+Copy the file `geohashing.el` somewhere into your emacs load-path and add
+``` emacs-lisp
+(require 'geohashing)
+```
 to your emacs config, e.g. `.emacs`.
 
-Also, set the calendar variables `calendar-latitude` and
-`calendar-longitude`, e.g. by inserting the following into your `.emacs`:
+Then, add your home coordinates or whichever coordinates you want to use for the nearest-geohash calculation, either via `M-x customize-group geohashing` or in your init file via
+``` emacs-lisp
+(customize-set-variable 'geohashing-latitude 31.14)
+(customize-set-variable 'geohashing-longitude 15.92)
+```
+(**Warning:** Your home coordinates are sensitive information, don't set them in your init file if it is in a public repository or you intend to share it otherwise.)
 
-    (setq calendar-latitude 42.42)
-    (setq calendar-longitude 31.41)
+### `straight` + `use-package`
 
-(Those variables are used for example when typing `S`
-in the emacs calendar mode to display the sunrise and sunset times.)
+If you use [use-package](https://github.com/jwiegley/use-package) and [straight.el](https://github.com/radian-software/straight.el), you can also install it comfortably by just adding to your init file:
+``` emacs-lisp
+(use-package geohashing
+  :straight (:type git :host github :repo "meliache/geohashing.el"))
+  :custom
+  (geohashing-latitude 31.14)
+  (geohashing-longitude 15.92)
+```
 
-Then you can type
+## Usage
 
-    M-x geohashing
-
-and you will be prompted for a date same as in org-mode.
-Then you will get the geohash coordinates for that date,
-the distance and you will be asked if you want to open the coordinates
-on a map in the webbrowser.
-
-* * *
-## Advanced use
-
-More things are possible when using it non-interactively:
-
-    (geohash-coordinates '(graticule-latitude graticule-longitude)
-                         '(year month day))
-
-will return the geohash coordinates for this graticule on that particular date.
-
-    (calc-nearest-geohash '(exact-latitude exact-longitude)
-                          '(year month day))
-
-will return a list of the latitude and longitude of the nearest geohash to your
-exact coordinates.
-
-    (calc-distance geohash-coordinates exact-coordinates)
-
-will return the distance between two coordinates.teractively:
-
-    (geohash-coordinates '(graticule-latitude graticule-longitude)
-                         '(year month day))
-
-will return the geohash coordinates for this graticules on that particular date.
-
-    (calc-nearest-geohash '(exact-latitude exact-longitude)
-                          '(year month day))
-
-will return a list of the latitude and longitude of the nearest geohash to your
-exact coordinates.
-
-    (calc-distance geohash-coordinates exact-coordinates)
-
-will return the distance between two coordinates.teractively:
-
-    (geohash-coordinates '(graticule-latitude graticule-longitude)
-                         '(year month day))
-
-will return the geohash coordinates for this graticules on that particular date.
-
-    (calc-nearest-geohash '(exact-latitude exact-longitude)
-                          '(year month day))
-
-will return a list of the latitude and longitude of the nearest geohash to your
-exact coordinates.
-
-    (calc-distance geohash-coordinates exact-coordinates)
-
-will return the distance between two coordinates.
-
-    (get-osm-url geohash-coordinates)
-
-will format a string to get a url to an OSM map for these coordinates.
+Run `M-x geohashing` and you will be prompted for a date. Then you will get the
+geohash coordinates for that date, the distance and you will be asked if you
+want to open the coordinates on a map in the webbrowser.
