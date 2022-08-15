@@ -1,4 +1,14 @@
-;; -*- lexical-binding: t; -*-
+;;; geohashing.el --- Find geohashes near you.  -*- lexical-binding: t; -*-
+
+;; Author: Michael Eliachevitch <m.eliachevitch@posteo.de>
+;; Maintainer: Michael Eliachevitch <m.eliachevitch@posteo.de>
+;; Homepage: https://github.com/meliache/geohashing.el
+
+;;; Commentary:
+;; TODO: add commentary
+
+;;; Code:
+
 (require 'calendar)
 (require 'org)
 (require 'cl-macs)
@@ -164,10 +174,10 @@ smallest distance to the home coordinates as returned by calc-distance."
               lat lon 10 lat lon))))
 
 (defun geohashing ()
-  "Uses the calendar-longitude and calendar-latitude variables and prompt
-the user for the date with the org-read-date function to calculate the nearest
-geohash coordinates for that date.
-Intended for quick interactive use."
+  "Use the CALENDAR-LONGITUDE and CALENDAR-LATITUDE variables and prompt
+the user for the date with the `org-read-date' function to
+calculate the nearest geohash coordinates for that date. Intended
+for quick interactive use."
   (interactive)
   (let* ((decoded-time (decode-time (org-read-date nil t)))
          (date (reverse (cl-subseq decoded-time 3 6)))
@@ -181,4 +191,5 @@ Intended for quick interactive use."
       (browse-url osm-url))))
 
 (provide 'geohashing)
+
 ;;; geohashing.el ends here
