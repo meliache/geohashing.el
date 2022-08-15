@@ -10,10 +10,12 @@
 ;;; Code:
 
 (require 'calendar)
-(require 'cl-lib)
-(require 'cl-macs)
-(require 'org)
+(require 'cl-lib)                       ; for cl-mapcar
+(require 'cl-seq)                       ; for cl-reduce
+(require 'cl-macs)                      ; for cl-loop
+(require 'org)                          ; for org-read-date
 (require 'seq)
+
 
 (defcustom geohashing-latitude 0.0
   "Decimal latitude used for calculating the nearest geohash."
@@ -32,7 +34,7 @@
 
 (defun geohashing--get-longitude (coordinates)
   "Takes COORDINATES as a list `(latitude longitude)' [deg]. Return longitude."
-  (cl-second coordinates))
+  (cadr coordinates))
 
 (defun geohashing--calendar-date-to-iso (calendar-date)
   "Take list `(month day year)', which is the date order that
