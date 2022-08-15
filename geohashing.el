@@ -3,7 +3,6 @@
 ;; Author: Michael Eliachevitch <m.eliachevitch@posteo.de>
 ;; Maintainer: Michael Eliachevitch <m.eliachevitch@posteo.de>
 ;; Homepage: https://github.com/meliache/geohashing.el
-;; Package-Requires: ((dash "2.19.1"))
 
 ;;; Commentary:
 ;; TODO: add commentary
@@ -15,7 +14,6 @@
 (require 'cl-macs)
 (require 'org)
 (require 'seq)
-(require 'dash)
 
 (defcustom geohashing-latitude 0.0
   "Decimal latitude used for calculating the nearest geohash."
@@ -157,6 +155,14 @@ poles."
           (list (+ delta-lat lat) lon)
           (list (+ delta-lat lat) (+ delta-lon lon)))))
 
+;; Adapted from dash.el `-min-by' function, but using `cl-reduce' instead of the
+;; dash `--reduce' function to avoid dependecy on dash.
+(defun geohashing--min-by (comparator list)
+  "Calculate minimum of LIST using COMPARATOR function."
+  (cl-reduce (lambda (x y)
+               (if (funcall comparator x y) y x))
+             list))
+
 (defun geohashing--calc-nearest-geohash (home-coords date)
   "Take exact home coordinates as `(lat long)' and DATE as `(year month day)'
 and returns list of coordinates of nearest geohash. The nearest
@@ -165,14 +171,16 @@ the four adjecant graticules and returning the geohash location
 with the smallest distance to the home coordinates as returned by
 `geohashing--calc-distance'."
   (let* ((offset (geohashing--get-offset date (geohashing--30W-rule-p home-coords date)))
-         (adjecent-grats (geohashing--get-adjecent-graticules home-coords)))
-    ;; TODO: find alternative for dash.el `-min-by' with built-in functions
-    (-min-by
-     (lambda (hash-coords) (geohashing--calc-distance hash-coords home-coords))
-     (mapcar (lambda (grat)
-               (list (+ (geohashing--get-latitude grat) (geohashing--get-latitude offset))
-                     (+ (geohashing--get-longitude grat) (geohashing--get-longitude offset))))
-             adjecent-grats))))
+         (adjecent-graticules (geohashing--get-adjecent-graticules home-coords))
+         (nearby-geohash-coordinates
+          (mapcar (lambda (grat)
+                    (list (+ (geohashing--get-latitude grat) (geohashing--get-latitude offset))
+                          (+ (geohashing--get-longitude grat) (geohashing--get-longitude offset))))
+                  adjecent-graticules))
+         (distance-comparator
+          (lambda (c1 c2) (> (geohashing--calc-distance home-coords c1)
+                             (geohashing--calc-distance home-coords c2)))))
+    (geohashing--min-by distance-comparator nearby-geohash-coordinates)))
 
 (defun geohashing--get-osm-url (coordinates &optional zoom-level)
   "Return an OSM url for COORDINATES, with an optional ZOOM-LEVEL."
