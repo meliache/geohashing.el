@@ -103,7 +103,7 @@ handling is implemented yet. Uses API at carabiner.peeron.com."
               (buffer-substring-no-properties (point-at-bol) (point-at-eol)))
         (kill-buffer (current-buffer)))
       (if (equal "" djia-string)
-          (error "Couldn't get DJIA for that date")
+          (error "Couldn't get DJIA for date %s" date)
         djia-string))))
 
 (defun geohashing--get-md5-string (date djia-string)
