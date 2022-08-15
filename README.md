@@ -8,7 +8,10 @@
 - `geohashing.el` was originally my first emacs lisp programming project, which I made when I was very new to programming in general. As I rediscovered geohashing for myself recently, I starting cleaning it up and make this a proper emacs package, but it's still not following many emacs best practices. 
 - Not all [quirks of the algorithm](https://geohashing.site/geohashing/The_Algorithm#Quirks) are implemented yet. `geohashing.el` takes into account
 
-## Installation 
+## Installation and configuration
+- [osm.el](https://github.com/minad/osm) for opening coordinate in map within emacs.
+
+### Requirements
 
 ### Manual
 Copy the file `geohashing.el` somewhere into your emacs load-path and add
