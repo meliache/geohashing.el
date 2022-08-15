@@ -205,10 +205,12 @@ with the smallest distance to the home coordinates as returned by
 
 ;;;###autoload
 (defun geohashing ()
-  "Use the GEOHASHING-LONGITUDE and GEOHASHING-LATITUDE variables and prompt
-the user for the date with the `org-read-date' function to
-calculate the nearest geohash coordinates for that date. Intended
-for quick interactive use."
+  "Start geohashing.
+
+Currently it will prompt for a date and then find the nearest
+geohash to you on that day. Then, it will ask whether to open
+this geohash coordinates in a map."
+  ;; TODO make this an entire menu or possibly even major-mode
   (interactive)
   (let* ((decoded-time (decode-time (org-read-date nil t)))
          (date (reverse (seq-subseq decoded-time 3 6)))
