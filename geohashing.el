@@ -16,17 +16,23 @@
 (require 'org)                          ; for org-read-date
 (require 'seq)
 
-(defcustom geohashing-latitude 0.0
-  "Decimal latitude used for calculating the nearest geohash."
-  :type 'number
+(defcustom geohashing-home
+  (let ((lat (or (and (bound-and-true-p osm-home) (nth 0 osm-home))
+                 (bound-and-true-p calendar-latitude)))
+        (lon (or (and (bound-and-true-p osm-home) (nth 1 osm-home))
+                 (bound-and-true-p calendar-longitude))))
+    (if (and lat lon)
+        (list lat lon)
+      (list 0 0)))
+  "Home coordinates for finding the closest geohash."
+  :type '(list :tag "Coordinates"
+          (number :tag "Latitude  ")
+          (number :tag "Longitude "))
   :group 'geohashing)
 
-(defcustom geohashing-longitude 0.0
-  "Decimal longitude used for calculating the nearest geohash."
-  :type 'number
-  :group 'geohashing)
-
-(defcustom geohashing-osm-zoom-level 10
+(defcustom geohashing-osm-zoom-level
+  (if (bound-and-true-p osm-home)
+      (nth 2 osm-home) 12)
   "Initial OSM zoom level to use when opening map."
   :type 'integer
   :group 'geohashing)
@@ -206,12 +212,11 @@ for quick interactive use."
   (interactive)
   (let* ((decoded-time (decode-time (org-read-date nil t)))
          (date (reverse (seq-subseq decoded-time 3 6)))
-         (home-coords (list geohashing-latitude geohashing-longitude))
-         (geohash-coordinates (geohashing--calc-nearest-geohash home-coords date)))
+         (geohash-coordinates (geohashing--calc-nearest-geohash geohashing-home date)))
     (when (yes-or-no-p
            (format "Nearest geohash at %s\nwith a distance of %f km.\nOpen map?"
                    geohash-coordinates
-                   (geohashing--calc-distance home-coords geohash-coordinates)))
+                   (geohashing--calc-distance geohashing-home geohash-coordinates)))
       (seq-let (lat lon) geohash-coordinates
         (require 'osm)
         (osm-goto lat lon geohashing-osm-zoom-level)))))

@@ -9,33 +9,32 @@
 - Not all [quirks of the algorithm](https://geohashing.site/geohashing/The_Algorithm#Quirks) are implemented yet. `geohashing.el` takes into account
 
 ## Installation and configuration
-- [osm.el](https://github.com/minad/osm) for opening coordinate in map within emacs.
 
 ### Requirements
+- [osm.el](https://github.com/minad/osm) for opening the geohash coordinates in a map within Emacs.
 
-### Manual
+### Manual installation
 Copy the file `geohashing.el` somewhere into your emacs load-path and add
 ``` emacs-lisp
 (require 'geohashing)
 ```
 to your emacs config, e.g. `.emacs`.
 
-Then, add your home coordinates or whichever coordinates you want to use for the nearest-geohash calculation, either via `M-x customize-group geohashing` or in your init file via
+To calculate the nearest geohash, `geohashing.el` needs your home-coordinates, which can be customized via `geohashing-home`. By default, the package looks if you have set `osm-home` variable from the `osm.el` package or the `calendar-latitude` and `calendar-longitude` variables from `calendar.el` package and if one of those is bound, it uses that as the default home coordinate for geohashing. To set a custom value for `geohashing.el` (or if you haven't the above variable set), use the customize menu via `M-x customize-group geohashing` set the coordinates in  your init file via
 ``` emacs-lisp
-(customize-set-variable 'geohashing-latitude 31.14)
-(customize-set-variable 'geohashing-longitude 15.92)
+(customize-set-variable 'geohashing-home '(31.14 15.92))
 ```
+
 (**Warning:** Your home coordinates are sensitive information, don't set them in your init file if it is in a public repository or you intend to share it otherwise.)
 
-### `straight` + `use-package`
+### Installation via `straight` + `use-package`
 
 If you use [use-package](https://github.com/jwiegley/use-package) and [straight.el](https://github.com/radian-software/straight.el), you can also install it comfortably by just adding to your init file:
 ``` emacs-lisp
 (use-package geohashing
   :straight (:type git :host github :repo "meliache/geohashing.el"))
   :custom
-  (geohashing-latitude 31.14)
-  (geohashing-longitude 15.92)
+  (geohashing-home '(31.14 15.92)
 ```
 
 ## Usage
