@@ -10,15 +10,27 @@
 ;;; Code:
 
 (require 'calendar)
-(require 'org)
-(require 'cl-macs)
 (require 'cl-lib)
+(require 'cl-macs)
+(require 'org)
+(require 'seq)
 
-(defun latitude (coordinates)
+(defcustom geohashing-latitude 0.0
+  "Decimal latitude used for calculating the nearest geohash."
+  :type 'number
+  :group 'geohashing)
+
+(defcustom geohashing-longitude 0.0
+  "Decimal longitude used for calculating the nearest geohash."
+  :type 'number
+  :group 'geohashing)
+
+
+(defun geohashing--get-latitude (coordinates)
   "Take COORDINATES as a list `(latitude longitude)' [deg]. Return latitude."
   (car coordinates))
 
-(defun longitude (coordinates)
+(defun geohashing--get-longitude (coordinates)
   "Takes COORDINATES as a list `(latitude longitude)' [deg]. Return longitude."
   (cl-second coordinates))
 
@@ -44,7 +56,7 @@ that calendar.el uses."
     (calendar-date-compare (cons (list month1 day1 year1) nil)
                            (cons (list month2 day2 year2) nil))))
 (defun +days (date days-to-add)
-  "Take DATE as `(year month day)' and add the DAYS-to-ADD number of days."
+  "Take DATE as `(year month day)' and add the DAYS-TO-ADD number of days."
   (calendar-date-to-iso
    (calendar-gregorian-from-absolute
     (+ (calendar-absolute-from-gregorian
@@ -63,7 +75,7 @@ True if longitude east of -30deg and date is after (or on) 2008-05-27"
   (and (> (elt coordinates 0) -30)
        (not (date-compare date first-day-of-30W))))
 
-(30W-rule (list calendar-latitude calendar-longitude) (date-today))
+(30W-rule (list geohashing-latitude geohashing-longitude) (date-today))
 
 (defun hex-to-fractional (hex-string)
   "Convert a lowercase HEX-STRING to a decimal fraction."
@@ -109,8 +121,8 @@ in respect to a graticule as a 2-value list."
 (defun geohash-coordinates (graticule date)
   "Return geohash coordinates for given GRATICULE and DATE."
   (let ((offset (geohash-offset date (30W-rule graticule date))))
-    (list (+ (latitude graticule) (latitude offset))
-          (+ (longitude graticule) (longitude offset)))))
+    (list (+ (geohashing--get-latitude graticule) (geohashing--get-latitude offset))
+          (+ (geohashing--get-longitude graticule) (geohashing--get-longitude offset)))))
 
 (defun haversin (angle)
   "Haversine function of ANGLE given in radians.
@@ -124,18 +136,18 @@ in respect to a graticule as a 2-value list."
          (rcoord1 (mapcar (lambda (x) (degrees-to-radians x)) coord1))
          (rcoord2 (mapcar (lambda (x) (degrees-to-radians x)) coord2))
          (delta (cl-mapcar '- rcoord2 rcoord1)))
-    (* 2 earth-radius (asin (sqrt (+ (haversin (latitude delta))
-                                     (* (cos (latitude rcoord1))
-                                        (cos (latitude rcoord2))
-                                        (haversin (longitude delta)))))))))
+    (* 2 earth-radius (asin (sqrt (+ (haversin (geohashing--get-latitude delta))
+                                     (* (cos (geohashing--get-latitude rcoord1))
+                                        (cos (geohashing--get-latitude rcoord2))
+                                        (haversin (geohashing--get-longitude delta)))))))))
 
 (defun adjecent-graticules (home-coord)
   "Return the coordinates of the four graticules nearest to HOME-COORD.
 These are which should be searched for the nearest geohash.
 Assumes rectangle graticules and might be problematic near the
 poles."
-  (let* ((lat (floor (latitude home-coord)))
-         (lon (floor (longitude home-coord)))
+  (let* ((lat (floor (geohashing--get-latitude home-coord)))
+         (lon (floor (geohashing--get-longitude home-coord)))
          (delta-lat (if (>= (mod lat 1) 0.5) 1 -1))
          (delta-lon (if (>= (mod lon 1) 0.5) 1 -1)))
     (list (list lat lon)
@@ -160,8 +172,8 @@ smallest distance to the home coordinates as returned by calc-distance."
     (minimize
      (lambda (hash-coords) (calc-distance hash-coords home-coords))
      (mapcar (lambda (grat)
-               (list (+ (latitude grat) (latitude offset))
-                     (+ (longitude grat) (longitude offset))))
+               (list (+ (geohashing--get-latitude grat) (geohashing--get-latitude offset))
+                     (+ (geohashing--get-longitude grat) (geohashing--get-longitude offset))))
              adjecent-grats))))
 
 (defun get-osm-url (coordinates &optional zoom-level)
@@ -174,14 +186,14 @@ smallest distance to the home coordinates as returned by calc-distance."
               lat lon 10 lat lon))))
 
 (defun geohashing ()
-  "Use the CALENDAR-LONGITUDE and CALENDAR-LATITUDE variables and prompt
+  "Use the GEOHASHING-LONGITUDE and GEOHASHING-LATITUDE variables and prompt
 the user for the date with the `org-read-date' function to
 calculate the nearest geohash coordinates for that date. Intended
 for quick interactive use."
   (interactive)
   (let* ((decoded-time (decode-time (org-read-date nil t)))
-         (date (reverse (cl-subseq decoded-time 3 6)))
-         (home-coords (list calendar-latitude calendar-longitude))
+         (date (reverse (seq-subseq decoded-time 3 6)))
+         (home-coords (list geohashing-latitude geohashing-longitude))
          (geohash-coordinates (calc-nearest-geohash home-coords date))
          (osm-url (get-osm-url geohash-coordinates)))
     (when (yes-or-no-p
