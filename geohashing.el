@@ -185,6 +185,7 @@ smallest distance to the home coordinates as returned by calc-distance."
       (format "https://www.openstreetmap.org/?mlat=%f&mlon=%f#map=%d/%f/%f"
               lat lon 10 lat lon))))
 
+;;;###autoload
 (defun geohashing ()
   "Use the GEOHASHING-LONGITUDE and GEOHASHING-LATITUDE variables and prompt
 the user for the date with the `org-read-date' function to
